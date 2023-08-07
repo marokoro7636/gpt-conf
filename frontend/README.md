@@ -6,16 +6,16 @@
 
 # HTTPリクエスト形式
 
-```json
-Method: POST
-Request Header: Content-Type: application/json
+Method: `POST`  
+Request Header: `Content-Type: application/json`  
 Request Body:
+```json
 {
     "server" : "<サーバの種類>",
     "software" : "<サーバのソフトウェア>",
     "content" : [
         "<箇条書きで設定の内容1>",
-        "<箇条書きで設定の内容2>",
+        "<箇条書きで設定の内容2>"
     ]
 }
 ```

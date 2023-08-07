@@ -6,7 +6,7 @@ services:
     volumes:
       - ./frontend/docs:/usr/local/apache2/htdocs
     ports:
-      - 8081:80
+      - "8081:80"
     depends_on:
       - api
   api:
@@ -14,5 +14,5 @@ services:
     volumes:
       - ./backend/app:/app
     ports:
-      - 5000:5000
+      - "5555:5555"
     command: python /app/app.py

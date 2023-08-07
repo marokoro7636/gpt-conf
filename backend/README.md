@@ -6,9 +6,9 @@
 
 # HTTPレスポンス形式
 
-```json
-Response Header: Content-Type: application/json
+Response Header: `Content-Type: application/json`
 Response Body:
+```json
 {
     "result" : "<設定ファイルの内容>",
     "detail" : "<Chat GPTが出力した解説>"
