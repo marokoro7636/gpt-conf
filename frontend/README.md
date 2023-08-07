@@ -1,0 +1,21 @@
+# Frontend
+
+- サーバの種類やソフトウェアを選択したり、ユーザの入力を受け取る
+- ユーザの入力にしたがって、Backendで動作するREST APIへPOST
+- 生成した設定ファイルの内容をBackendから受け取って表示
+
+# HTTPリクエスト形式
+
+```json
+Method: POST
+Request Header: Content-Type: application/json
+Request Body:
+{
+    "server" : "<サーバの種類>",
+    "software" : "<サーバのソフトウェア>",
+    "content" : [
+        "<箇条書きで設定の内容1>",
+        "<箇条書きで設定の内容2>",
+    ]
+}
+```

@@ -1,0 +1,18 @@
+version: '3'
+
+services:
+  web:
+    image: httpd:alpine3.18
+    volumes:
+      - ./frontend/docs:/usr/local/apache2/htdocs
+    ports:
+      - 8081:80
+    depends_on:
+      - api
+  api:
+    build: ./backend
+    volumes:
+      - ./backend/app:/app
+    ports:
+      - 5000:5000
+    command: python /app/app.py
