@@ -17,7 +17,7 @@ interface Response {
     detail: string
 }
 
-const API_URL = "http://localhost:5555";
+const API_URL = "http://localhost:5555/api";
 
 const PostForm = () => {
     const {
@@ -45,19 +45,18 @@ const PostForm = () => {
     const onSubmit: SubmitHandler<PostData> = async (postData) => {
         setLoading(true);
         try {
-            // const response = await axios.post(API_URL, postData, {headers: {"Content-Type": "application/json"}});
-            // const json: Response = await response.data.json();
-            // console.log(json);
+            const response = await axios.post(API_URL, postData, {headers: {"Content-Type": "application/json"}});
+            const res: Response = await response.data;
 
-            console.log(postData);
-            await new Promise(s => setTimeout(s, 2000));
-            const res: Response = {
-                result: "設定ファイルの内容",
-                detail: "設定ファイルの詳細"
-            };
+            // console.log(postData);
+            // await new Promise(s => setTimeout(s, 2000));
+            // const res: Response = {
+            //     result: "設定ファイルの内容",
+            //     detail: "設定ファイルの詳細"
+            // };
             setResponse(res);
         } catch (e) {
-            alert("API通信エラー");
+            alert(e);
         } finally {
             setLoading(false);
         }

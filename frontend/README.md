@@ -7,6 +7,7 @@
 # HTTPリクエスト形式
 
 Method: `POST`  
+Path: `http://localhost:5555/api`  
 Request Header: `Content-Type: application/json`  
 Request Body:
 
