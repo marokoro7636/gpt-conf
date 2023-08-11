@@ -9,13 +9,14 @@
 Method: `POST`  
 Request Header: `Content-Type: application/json`  
 Request Body:
+
 ```json
 {
-    "server" : "<サーバの種類>",
-    "software" : "<サーバのソフトウェア>",
-    "content" : [
-        "<箇条書きで設定の内容1>",
-        "<箇条書きで設定の内容2>"
-    ]
+  "server": "<サーバの種類>",
+  "software": "<サーバのソフトウェア>",
+  "contents": [
+    {"content": "<箇条書きで設定の内容1>"},
+    {"content": "<箇条書きで設定の内容2>"}
+  ]
 }
 ```

@@ -1,10 +1,15 @@
 import React, {useState} from 'react';
 import axios from "axios";
+import {useForm, useFieldArray, SubmitHandler} from "react-hook-form";
 
 interface PostData {
     server: string,
     software: string,
-    content: string,
+    contents: ConfigContent[],
+}
+
+interface ConfigContent {
+    content: string
 }
 
 interface Response {
@@ -12,13 +17,24 @@ interface Response {
     detail: string
 }
 
-const API_URL = "http://localhost:5555"
+const API_URL = "http://localhost:5555";
 
 const PostForm = () => {
-    const [postData, setPostData] = useState<PostData>({
-        server: "",
-        software: "",
-        content: "",
+    const {
+        register,
+        handleSubmit,
+        control,
+        formState: {errors}
+    } = useForm<PostData>({
+        defaultValues: {
+            server: "",
+            software: "",
+            contents: [{content: ""}]
+        }
+    });
+    const {fields, append, remove} = useFieldArray({
+        control,
+        name: "contents",
     });
     const [response, setResponse] = useState<Response>({
         result: "",
@@ -26,18 +42,19 @@ const PostForm = () => {
     });
     const [loading, setLoading] = useState(false);
 
-
-    const handle = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const newData: PostData = {...postData};
-        newData[e.target.id as keyof PostData] = e.target.value;
-        setPostData(newData);
-    };
-
-    const submit = async (e: React.ChangeEvent<HTMLFormElement>) => {
-        e.preventDefault();
+    const onSubmit: SubmitHandler<PostData> = async (postData) => {
         setLoading(true);
         try {
-            const res: Response = await post(postData);
+            // const response = await axios.post(API_URL, postData, {headers: {"Content-Type": "application/json"}});
+            // const json: Response = await response.data.json();
+            // console.log(json);
+
+            console.log(postData);
+            await new Promise(s => setTimeout(s, 2000));
+            const res: Response = {
+                result: "設定ファイルの内容",
+                detail: "設定ファイルの詳細"
+            };
             setResponse(res);
         } catch (e) {
             alert("API通信エラー");
@@ -46,29 +63,27 @@ const PostForm = () => {
         }
     };
 
-    const post = async (postData: PostData) => {
-        // const response = await axios.post(API_URL, postData, {headers: {"Content-Type": "application/json"}});
-        // const json: Response = await response.data.json();
-        // console.log(json);
-
-        console.log(postData)
-        await new Promise(s => setTimeout(s, 2000));
-        return {
-            result: "設定ファイルの内容",
-            detail: "設定ファイルの詳細"
-        };
-    }
-
     return (
         <div>
-            <form onSubmit={submit}>
-                サーバ名
-                <input onChange={handle} id="server" type="text"/><br/>
-                ソフトウェア名
-                <input onChange={handle} id="software" type="text"/><br/>
-                設定したい内容<br/>
-                <input onChange={handle} id="content" name="content"/><br/>
-                <button>送信</button>
+            <form onSubmit={handleSubmit(onSubmit)}>
+                <label>サーバ名</label>
+                <input id="server" type="text" {...register("server", {required: true})}/><br/>
+                {errors.server && <div>入力してください</div>}
+                <label>ソフトウェア名</label>
+                <input id="software" type="text" {...register("software", {required: true})}/><br/>
+                {errors.software && <div>入力してください</div>}
+                <label>設定したい内容(箇条書き)</label><br/>
+                {fields.map((field, index) => (
+                    <div key={field.id}>
+                        <div>
+                            <input {...register(`contents.${index}.content` as const, {required: true})} />
+                            <button type="button" onClick={() => remove(index)}>削除</button>
+                            {errors.contents?.[index]?.content && <div>入力してください</div>}
+                        </div>
+                    </div>
+                ))}
+                <button type="button" onClick={() => append({content: ""})}>設定を1行追加</button>
+                <button type="submit">送信</button>
             </form>
             <br/>
             {loading ? (
