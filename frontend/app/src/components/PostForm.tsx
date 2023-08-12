@@ -11,7 +11,14 @@ import {
 import DeleteIcon from '@mui/icons-material/Delete';
 import SelectServer from "./SelectServer";
 
-export interface PostData {
+export interface Input {
+    server: number,
+    serverOption: string,
+    software: string,
+    contents: ConfigContent[],
+}
+
+interface Request {
     server: string,
     software: string,
     contents: ConfigContent[],
@@ -28,15 +35,24 @@ interface Response {
 
 const API_URL = "http://localhost:5555/make";
 
+export const serverItem = [
+    "未選択",
+    "Webサーバ",
+    "メールサーバ",
+    "SSHサーバ",
+    "DNSサーバ",
+]
+
 const PostForm = () => {
     const {
         register,
         handleSubmit,
         control,
         formState: {errors}
-    } = useForm<PostData>({
+    } = useForm<Input>({
         defaultValues: {
-            server: "",
+            server: 0,
+            serverOption: "",
             software: "",
             contents: [{content: ""}]
         }
@@ -51,10 +67,16 @@ const PostForm = () => {
     });
     const [loading, setLoading] = useState(false);
 
-    const onSubmit: SubmitHandler<PostData> = async (postData) => {
+    const onSubmit: SubmitHandler<Input> = async (input) => {
         setLoading(true);
+        const request: Request = {
+            server: input.server !== -1 ? serverItem[input.server] : input.serverOption,
+            software: input.software,
+            contents: input.contents,
+        }
+        console.log(request);
         try {
-            const response = await axios.post(API_URL, postData, {headers: {"Content-Type": "application/json"}});
+            const response = await axios.post(API_URL, request, {headers: {"Content-Type": "application/json"}});
             const res: Response = await response.data;
             setResponse(res);
         } catch (e) {
@@ -81,7 +103,7 @@ const PostForm = () => {
                     {fields.map((field, index) => (
                         <Stack direction={"row"} spacing={3} key={field.id}>
                             <TextField
-                                label={"設定したい内容"}
+                                label="設定したい内容"
                                 fullWidth
                                 {...register(`contents.${index}.content` as const, {required: "入力してください"})}
                                 error={!!errors.contents?.[index]?.content}
@@ -103,6 +125,8 @@ const PostForm = () => {
                     <Button type="submit" variant="contained">送信</Button>
                 </Stack>
                 <br/>
+                <hr/>
+                <h1>生成結果</h1>
                 {
                     loading ? (
                         <p>ロード中</p>
