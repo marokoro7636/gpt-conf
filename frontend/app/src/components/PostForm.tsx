@@ -3,7 +3,7 @@ import axios from "axios";
 import {useForm, useFieldArray, SubmitHandler} from "react-hook-form";
 import {
     Button,
-    Container,
+    Container, Divider,
     IconButton,
     Stack,
     TextField
@@ -36,7 +36,6 @@ interface Response {
 const API_URL = "http://localhost:5555/make";
 
 export const serverItem = [
-    "未選択",
     "Webサーバ",
     "メールサーバ",
     "SSHサーバ",
@@ -122,10 +121,12 @@ const PostForm = () => {
                     >
                         設定を1行追加
                     </Button>
-                    <Button type="submit" variant="contained">送信</Button>
+                    <Button type="submit" variant="contained">生成</Button>
                 </Stack>
-                <br/>
-                <hr/>
+            </Container>
+            <br/>
+            <Container maxWidth="md">
+            <Divider/>
                 <h1>生成結果</h1>
                 {
                     loading ? (

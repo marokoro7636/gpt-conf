@@ -32,11 +32,10 @@ const SelectServer = ({control}: Props) => {
                                     label="サーバの種類"
                                     {...field}
                                 >
-                                    <MenuItem value={0} sx={{color: 'gray'}}>{serverItem[0]}</MenuItem>
-                                    <MenuItem value={1}>{serverItem[1]}</MenuItem>
-                                    <MenuItem value={2}>{serverItem[2]}</MenuItem>
-                                    <MenuItem value={3}>{serverItem[3]}</MenuItem>
-                                    <MenuItem value={4}>{serverItem[4]}</MenuItem>
+                                    <MenuItem value={0} sx={{color: 'gray'}}>未選択</MenuItem>
+                                    {serverItem.map((server, index) => (
+                                        <MenuItem value={index+1} key={index+1}>{server}</MenuItem>
+                                    ))}
                                     <MenuItem value={-1}>その他</MenuItem>
                                 </Select>
                                 <FormHelperText>{fieldState.error?.message}</FormHelperText>
