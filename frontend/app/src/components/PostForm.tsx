@@ -1,8 +1,17 @@
 import React, {useState} from 'react';
 import axios from "axios";
 import {useForm, useFieldArray, SubmitHandler} from "react-hook-form";
+import {
+    Button,
+    Container,
+    IconButton,
+    Stack,
+    TextField
+} from "@mui/material";
+import DeleteIcon from '@mui/icons-material/Delete';
+import SelectServer from "./SelectServer";
 
-interface PostData {
+export interface PostData {
     server: string,
     software: string,
     contents: ConfigContent[],
@@ -17,7 +26,7 @@ interface Response {
     detail: string
 }
 
-const API_URL = "http://localhost:5555/api";
+const API_URL = "http://localhost:5555/make";
 
 const PostForm = () => {
     const {
@@ -47,13 +56,6 @@ const PostForm = () => {
         try {
             const response = await axios.post(API_URL, postData, {headers: {"Content-Type": "application/json"}});
             const res: Response = await response.data;
-
-            // console.log(postData);
-            // await new Promise(s => setTimeout(s, 2000));
-            // const res: Response = {
-            //     result: "設定ファイルの内容",
-            //     detail: "設定ファイルの詳細"
-            // };
             setResponse(res);
         } catch (e) {
             alert(e);
@@ -64,37 +66,57 @@ const PostForm = () => {
 
     return (
         <div>
-            <form onSubmit={handleSubmit(onSubmit)}>
-                <label>サーバ名</label>
-                <input id="server" type="text" {...register("server", {required: true})}/><br/>
-                {errors.server && <div>入力してください</div>}
-                <label>ソフトウェア名</label>
-                <input id="software" type="text" {...register("software", {required: true})}/><br/>
-                {errors.software && <div>入力してください</div>}
-                <label>設定したい内容(箇条書き)</label><br/>
-                {fields.map((field, index) => (
-                    <div key={field.id}>
+            <Container maxWidth="sm" sx={{pt: 5}}>
+                <Stack component="form" onSubmit={handleSubmit(onSubmit)} spacing={2}>
+                    <SelectServer control={control}/>
+
+                    <TextField
+                        label="ソフトウェア名"
+                        {...register("software", {required: "入力してください"})}
+                        fullWidth
+                        error={!!errors.software}
+                        helperText={errors.software?.message as string}
+                    />
+
+                    {fields.map((field, index) => (
+                        <Stack direction={"row"} spacing={3} key={field.id}>
+                            <TextField
+                                label={"設定したい内容"}
+                                fullWidth
+                                {...register(`contents.${index}.content` as const, {required: "入力してください"})}
+                                error={!!errors.contents?.[index]?.content}
+                                helperText={errors.contents?.[index]?.content?.message as string}
+                            />
+                            <IconButton onClick={() => remove(index)} color="error" disabled={index === 0}>
+                                <DeleteIcon/>
+                            </IconButton>
+                        </Stack>
+                    ))}
+                    <Button
+                        type="button"
+                        onClick={() => append({content: ""})}
+                        variant="contained"
+                        color="secondary"
+                    >
+                        設定を1行追加
+                    </Button>
+                    <Button type="submit" variant="contained">送信</Button>
+                </Stack>
+                <br/>
+                {
+                    loading ? (
+                        <p>ロード中</p>
+                    ) : (
                         <div>
-                            <input {...register(`contents.${index}.content` as const, {required: true})} />
-                            <button type="button" onClick={() => remove(index)}>削除</button>
-                            {errors.contents?.[index]?.content && <div>入力してください</div>}
+                            {response["result"]}<br/>
+                            {response["detail"]}
                         </div>
-                    </div>
-                ))}
-                <button type="button" onClick={() => append({content: ""})}>設定を1行追加</button>
-                <button type="submit">送信</button>
-            </form>
-            <br/>
-            {loading ? (
-                <p>ロード中</p>
-            ) : (
-                <div>
-                    {response["result"]}<br/>
-                    {response["detail"]}
-                </div>
-            )}
+                    )
+                }
+            </Container>
         </div>
-    );
+    )
+        ;
 };
 
 export default PostForm;
