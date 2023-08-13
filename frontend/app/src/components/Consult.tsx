@@ -1,9 +1,77 @@
-import React from 'react';
+import React, {useState} from 'react';
+import {SubmitHandler, useForm} from "react-hook-form";
+import axios from "axios";
+import {Button, Container, Divider, Stack, TextField} from "@mui/material";
+
+interface Request {
+    software: string,
+    content: string
+}
+
+interface Response {
+    result: string
+}
+
+const API_URL = "http://localhost:5555/consult"
 
 const Consult = () => {
+    const {register, handleSubmit, formState: {errors}} = useForm<Request>({
+        defaultValues: {
+            software: "",
+            content: "",
+        }
+    });
+    const [response, setResponse] = useState<Response>({
+        result: "",
+    });
+    const [loading, setLoading] = useState(false);
+
+    const onSubmit: SubmitHandler<Request> = async (request) => {
+        setLoading(true);
+        console.log(request);
+        try {
+            const res = await axios.post(API_URL, request, {headers: {"Content-Type": "application/json"}});
+            setResponse(res.data);
+        } catch (e) {
+            alert(e);
+        } finally {
+            setLoading(false);
+        }
+    }
+
     return (
         <div>
-            設定ファイルを入力
+            <Container maxWidth="md">
+                <h1>設定ファイルの診断</h1>
+                <Stack component="form" onSubmit={handleSubmit(onSubmit)} spacing={2}>
+                    <TextField
+                        label="ソフトウェア名"
+                        {...register("software", {required: "入力してください"})}
+                        fullWidth
+                        error={!!errors.software}
+                        helperText={errors.software?.message as string}
+                    />
+                    <TextField
+                        label="設定ファイルの内容"
+                        {...register("content", {required: "入力してください"})}
+                        fullWidth
+                        multiline
+                        rows={10}
+                        error={!!errors.content}
+                        helperText={errors.content?.message as string}
+                    />
+                    <Button type="submit" variant="contained">診断</Button>
+                    <Divider/>
+                    <h1>診断結果</h1>
+                    {
+                        loading ? (
+                            <p>ロード中</p>
+                        ) : (
+                            <div>{response.result}</div>
+                        )
+                    }
+                </Stack>
+            </Container>
         </div>
     );
 };
