@@ -30,7 +30,6 @@ interface ConfigContent {
 
 interface Response {
     result: string,
-    detail: string
 }
 
 const API_URL = "http://localhost:5555/make";
@@ -53,7 +52,7 @@ const PostForm = () => {
             server: 0,
             serverOption: "",
             software: "",
-            contents: [{content: ""}]
+            contents: [{content: ""}],
         }
     });
     const {fields, append, remove} = useFieldArray({
@@ -62,7 +61,6 @@ const PostForm = () => {
     });
     const [response, setResponse] = useState<Response>({
         result: "",
-        detail: ""
     });
     const [loading, setLoading] = useState(false);
 
@@ -75,9 +73,8 @@ const PostForm = () => {
         }
         console.log(request);
         try {
-            const response = await axios.post(API_URL, request, {headers: {"Content-Type": "application/json"}});
-            const res: Response = await response.data;
-            setResponse(res);
+            const res = await axios.post(API_URL, request, {headers: {"Content-Type": "application/json"}});
+            setResponse(res.data);
         } catch (e) {
             alert(e);
         } finally {
@@ -87,7 +84,10 @@ const PostForm = () => {
 
     return (
         <div>
-            <Container maxWidth="sm" sx={{pt: 5}}>
+            <Container maxWidth="md">
+                <h1>設定ファイルの生成</h1>
+            </Container>
+            <Container maxWidth="sm">
                 <Stack component="form" onSubmit={handleSubmit(onSubmit)} spacing={2}>
                     <SelectServer control={control}/>
 
@@ -126,16 +126,13 @@ const PostForm = () => {
             </Container>
             <br/>
             <Container maxWidth="md">
-            <Divider/>
+                <Divider/>
                 <h1>生成結果</h1>
                 {
                     loading ? (
                         <p>ロード中</p>
                     ) : (
-                        <div>
-                            {response["result"]}<br/>
-                            {response["detail"]}
-                        </div>
+                        <div>{response.result}</div>
                     )
                 }
             </Container>
