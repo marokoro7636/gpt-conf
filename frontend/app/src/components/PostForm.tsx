@@ -2,14 +2,15 @@ import React, {useState} from 'react';
 import axios from "axios";
 import {useForm, useFieldArray, SubmitHandler} from "react-hook-form";
 import {
-    Button,
+    Box,
+    Button, CircularProgress,
     Container, Divider,
-    IconButton,
-    Stack,
+    IconButton, Stack,
     TextField
 } from "@mui/material";
 import DeleteIcon from '@mui/icons-material/Delete';
 import SelectServer from "./SelectServer";
+import {MAKE_API_URL} from "../const";
 
 export interface Input {
     server: number,
@@ -31,8 +32,6 @@ interface ConfigContent {
 interface Response {
     result: string,
 }
-
-const API_URL = "http://localhost:5555/make";
 
 export const serverItem = [
     "Webサーバ",
@@ -73,7 +72,7 @@ const PostForm = () => {
         }
         console.log(request);
         try {
-            const res = await axios.post(API_URL, request, {headers: {"Content-Type": "application/json"}});
+            const res = await axios.post(MAKE_API_URL, request, {headers: {"Content-Type": "application/json"}});
             setResponse(res.data);
         } catch (e) {
             alert(e);
@@ -130,7 +129,7 @@ const PostForm = () => {
                 <h1>生成結果</h1>
                 {
                     loading ? (
-                        <p>ロード中</p>
+                        <Box sx={{display: "flex", justifyContent: "center"}}><CircularProgress/></Box>
                     ) : (
                         <div>{response.result}</div>
                     )

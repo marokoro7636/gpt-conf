@@ -1,7 +1,8 @@
 import React, {useState} from 'react';
 import {SubmitHandler, useForm} from "react-hook-form";
 import axios from "axios";
-import {Button, Container, Divider, Stack, TextField} from "@mui/material";
+import {Box, Button, CircularProgress, Container, Divider, Stack, TextField} from "@mui/material";
+import {CONSULT_API_URL} from "../const";
 
 interface Request {
     software: string,
@@ -11,8 +12,6 @@ interface Request {
 interface Response {
     result: string
 }
-
-const API_URL = "http://localhost:5555/consult"
 
 const Consult = () => {
     const {register, handleSubmit, formState: {errors}} = useForm<Request>({
@@ -30,7 +29,7 @@ const Consult = () => {
         setLoading(true);
         console.log(request);
         try {
-            const res = await axios.post(API_URL, request, {headers: {"Content-Type": "application/json"}});
+            const res = await axios.post(CONSULT_API_URL, request, {headers: {"Content-Type": "application/json"}});
             setResponse(res.data);
         } catch (e) {
             alert(e);
@@ -65,7 +64,7 @@ const Consult = () => {
                     <h1>診断結果</h1>
                     {
                         loading ? (
-                            <p>ロード中</p>
+                            <Box sx={{display:"flex", justifyContent: "center"}}><CircularProgress /></Box>
                         ) : (
                             <div>{response.result}</div>
                         )

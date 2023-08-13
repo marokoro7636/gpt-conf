@@ -11,8 +11,8 @@ const TopAppBar = () => {
                         <Typography variant="h5" component="div" sx={{ flexGrow: 1 }}>
                             GPT-CONF
                         </Typography>
-                        <Button color="inherit" component={Link} to={"/"}>設定ファイル生成</Button>
-                        <Button color="inherit" component={Link} to={"/consult"}>設定ファイル診断</Button>
+                        <Button color="inherit" component={Link} to={"/"}>生成</Button>
+                        <Button color="inherit" component={Link} to={"/consult"}>診断</Button>
                     </Toolbar>
                 </AppBar>
             </Box>
