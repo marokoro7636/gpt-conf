@@ -1,5 +1,6 @@
 import React from 'react';
 import {AppBar, Box, Button, Toolbar, Typography} from "@mui/material";
+import {Link} from "react-router-dom";
 
 const TopAppBar = () => {
     return (
@@ -10,8 +11,8 @@ const TopAppBar = () => {
                         <Typography variant="h5" component="div" sx={{ flexGrow: 1 }}>
                             GPT-CONF
                         </Typography>
-                        <Button color="inherit">設定ファイル生成</Button>
-                        <Button color="inherit">設定ファイル診断</Button>
+                        <Button color="inherit" component={Link} to={"/"}>設定ファイル生成</Button>
+                        <Button color="inherit" component={Link} to={"/consult"}>設定ファイル診断</Button>
                     </Toolbar>
                 </AppBar>
             </Box>
