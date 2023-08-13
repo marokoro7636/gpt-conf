@@ -27,9 +27,15 @@ def make():
 
 @app.route("/consult", methods=['POST'])
 def consult():
-    messages = request.json["messages"]
+    software = request.json["software"]
+    content = request.json["content"]
 
-    response = {'result': talk(messages)}
+    prompt = f'''以下は{software}の設定ファイルです．
+{content}
+このファイルの設定について解説してください．
+提案があったらそれも一緒に教えてください．'''
+
+    response = {'result': talk(prompt)}
     return response
 
 
