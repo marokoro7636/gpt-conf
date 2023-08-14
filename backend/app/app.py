@@ -1,10 +1,12 @@
-from flask import Flask, request
+from flask import Flask, request, jsonify
 from flask_cors import CORS
 import openai
 import os
 
 app = Flask(__name__)
-cors = CORS(app, resources={r'/*': {'origins': {'http://localhost:5555'}}})
+app.config['JSON_AS_ASCII'] = False
+
+cors = CORS(app)
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
 @app.route("/make", methods=['POST'])
@@ -23,7 +25,7 @@ def make():
     解説をする必要はありません。'''
 
     response = {'result': ask(prompt)}
-    return response
+    return jsonify(response)
 
 
 @app.route("/consult", methods=['POST'])
@@ -37,7 +39,7 @@ def consult():
 提案があったらそれも一緒に教えてください．'''
 
     response = {'result': talk(prompt)}
-    return response
+    return jsonify(response)
 
 
 def ask(message):
