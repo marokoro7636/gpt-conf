@@ -1,9 +1,10 @@
 from flask import Flask, request
+from flask_cors import CORS
 import openai
 import os
 
 app = Flask(__name__)
-
+cors = CORS(app, resources={r'/*': {'origins': {'http://localhost:5555'}}})
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
 @app.route("/make", methods=['POST'])
